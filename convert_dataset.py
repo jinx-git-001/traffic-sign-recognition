@@ -1,5 +1,6 @@
 import os, csv, pickle
 import numpy as np
+from config import DATASET_DIR
 from skimage.io import imread
 from skimage.transform import resize
 
@@ -33,9 +34,9 @@ def load_test(images_dir, gt_csv, img_size=32):
     return np.array(X), np.array(y)
 
 # --- Paths (update these) ---
-TRAIN_DIR = 'dataset/GTSRB_Final_Training_Images/GTSRB/Final_Training/Images'
-TEST_DIR  = 'dataset/GTSRB_Final_Test_Images/GTSRB/Final_Test/Images'
-TEST_GT   = 'dataset/GTSRB_Final_Test_GT/GT-final_test.csv'
+TRAIN_DIR = os.path.join(DATASET_DIR, 'GTSRB_Final_Training_Images', 'GTSRB', 'Final_Training', 'Images')
+TEST_DIR  = os.path.join(DATASET_DIR, 'GTSRB_Final_Test_Images', 'GTSRB', 'Final_Test', 'Images')
+TEST_GT   = os.path.join(DATASET_DIR, 'GTSRB_Final_Test_Images', 'GTSRB', 'Final_Test', 'Images', 'GT-final_test.csv')
 
 print("Loading training data...")
 X_train, y_train = load_training(TRAIN_DIR)
@@ -52,8 +53,8 @@ X_test, y_test = load_test(TEST_DIR, TEST_GT)
 for name, X, y in [('train', X_train, y_train),
                    ('valid', X_valid, y_valid),
                    ('test',  X_test,  y_test)]:
-    with open(f'dataset/{name}.p', 'wb') as f:
+    with open(os.path.join(DATASET_DIR, f'{name}.p'), 'wb') as f:
         pickle.dump({'features': X, 'labels': y}, f)
-    print(f"Saved dataset/{name}.p — {X.shape}")
+    print(f"Saved {os.path.join(DATASET_DIR, name)}.p — {X.shape}")
 
 print("Done!")
