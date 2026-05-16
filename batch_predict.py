@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 import tensorflow as tf
-
+from config import DATASET_DIR
 from preprocess import preprocess
 
 
@@ -68,14 +68,14 @@ sign_names = {
 # Dataset test folder
 # =========================================================
 
-TEST_FOLDER = r'dataset/GTSRB_Final_Test_Images/GTSRB/Final_Test/Images'
+TEST_FOLDER = os.path.join(DATASET_DIR, 'GTSRB_Final_Test_Images', 'GTSRB', 'Final_Test', 'Images')
 
 
 # =========================================================
 # Read test CSV labels
 # =========================================================
 
-csv_path = r'dataset/GTSRB_Final_Test_GT/GT-final_test.csv'
+csv_path = os.path.join(DATASET_DIR, 'GTSRB_FINALTEST_GT', 'GT-final_test.csv')
 
 ground_truth = {}
 
