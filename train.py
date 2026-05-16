@@ -9,11 +9,7 @@ from model import build_model
 
 # --- Load dataset ---
 
-(X_train, y_train), (X_valid, y_valid), (X_test, y_test) = load_data(
-    'dataset/train.p',
-    'dataset/valid.p',
-    'dataset/test.p'
-)
+(X_train, y_train), (X_valid, y_valid), (X_test, y_test) = load_data()
 
 print(f"Train: {X_train.shape}")
 print(f"Valid: {X_valid.shape}")
