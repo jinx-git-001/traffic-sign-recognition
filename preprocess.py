@@ -1,8 +1,7 @@
 import numpy as np
 from skimage import exposure
 from sklearn.utils import shuffle
-
-NUM_CLASSES = 43
+from config import NUM_CLASSES
 
 def to_grayscale(X):
     return (0.299 * X[..., 0] + 0.587 * X[..., 1] + 0.114 * X[..., 2])
