@@ -14,9 +14,17 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
 # Load model
 try:
-    model = load_model(os.path.join("model", "stage2.h5"))
+    model = load_model(
+        os.path.join("model", "stage2_fixed.h5"),
+        compile=False
+    )
+
+    print("MODEL LOADED SUCCESSFULLY")
+
 except Exception as e:
+
     print(f"Error loading model: {e}")
+
     model = None
 
 # Traffic sign classes (GTSRB dataset - 43 classes)
