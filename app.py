@@ -10,6 +10,8 @@ import cv2
 
 app = Flask(__name__)
 
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+
 # Load model
 try:
     model = load_model(os.path.join("model", "stage2.keras"))
