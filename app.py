@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify, render_template
-from tensorflow.keras.models import load_model
 from PIL import Image
 from preprocess import preprocess
-
+from model_architecture import build_model
 import numpy as np
 import os
 import cv2
-
+import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -14,10 +13,10 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
 # Load model
 try:
-    model = load_model(
-        os.path.join("model", "stage2_fixed.h5"),
-        compile=False
-    )
+
+    model = build_model()
+
+    model.load_weights("model/model.weights.h5")
 
     print("MODEL LOADED SUCCESSFULLY")
 
