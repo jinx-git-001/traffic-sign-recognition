@@ -1,51 +1,53 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers
+from tensorflow.keras.layers import (
+    Input,
+    Conv2D,
+    MaxPooling2D,
+    Dropout,
+    Flatten,
+    Dense,
+    Concatenate
+)
+from tensorflow.keras.models import Model
+
 
 def build_model():
 
-    input_layer = layers.Input(shape=(32, 32, 1))
+    inputs = Input(shape=(32, 32, 1))
 
-    conv1 = layers.Conv2D(
-        32,
-        (5,5),
-        padding='same',
-        activation='relu',
-        kernel_regularizer=regularizers.l2(0.0001)
-    )(input_layer)
+    # Block 1
+    x1 = Conv2D(32, (5, 5), activation='relu', padding='same')(inputs)
+    x1_pool = MaxPooling2D(pool_size=(2, 2))(x1)
+    x1_drop = Dropout(0.25)(x1_pool)
 
-    pool1 = layers.MaxPooling2D((2,2))(conv1)
-    drop1 = layers.Dropout(0.1)(pool1)
+    # Block 2
+    x2 = Conv2D(64, (5, 5), activation='relu', padding='same')(x1_drop)
+    x2_pool = MaxPooling2D(pool_size=(2, 2))(x2)
+    x2_drop = Dropout(0.25)(x2_pool)
 
-    conv2 = layers.Conv2D(
-        64,
-        (5,5),
-        padding='same',
-        activation='relu',
-        kernel_regularizer=regularizers.l2(0.0001)
-    )(drop1)
+    # Block 3
+    x3 = Conv2D(128, (5, 5), activation='relu', padding='same')(x2_drop)
+    x3_pool = MaxPooling2D(pool_size=(2, 2))(x3)
+    x3_drop = Dropout(0.25)(x3_pool)
 
-    pool2 = layers.MaxPooling2D((2,2))(conv2)
-    drop2 = layers.Dropout(0.2)(pool2)
+    # Additional pooled branches
+    branch1 = MaxPooling2D(pool_size=(4, 4))(x1_drop)
+    branch2 = MaxPooling2D(pool_size=(2, 2))(x2_drop)
 
-    conv3 = layers.Conv2D(
-        128,
-        (5,5),
-        padding='same',
-        activation='relu',
-        kernel_regularizer=regularizers.l2(0.0001)
-    )(drop2)
+    # Flatten all branches
+    flat1 = Flatten()(branch1)
+    flat2 = Flatten()(branch2)
+    flat3 = Flatten()(x3_drop)
 
-    pool3 = layers.MaxPooling2D((2,2))(conv3)
-    drop3 = layers.Dropout(0.3)(pool3)
+    # Concatenate
+    merged = Concatenate()([flat1, flat2, flat3])
 
-    flat = layers.Flatten()(drop3)
+    # Dense layers
+    dense = Dense(1024, activation='relu')(merged)
+    dense = Dropout(0.5)(dense)
 
-    dense = layers.Dense(1024, activation='relu')(flat)
+    outputs = Dense(43, activation='softmax')(dense)
 
-    drop4 = layers.Dropout(0.5)(dense)
-
-    output = layers.Dense(43, activation='softmax')(drop4)
-
-    model = models.Model(inputs=input_layer, outputs=output)
+    model = Model(inputs=inputs, outputs=outputs)
 
     return model
