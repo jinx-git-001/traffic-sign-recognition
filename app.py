@@ -1,5 +1,9 @@
 import os
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
 from flask import Flask, request, jsonify, render_template
 from PIL import Image
 from preprocess import preprocess
@@ -7,6 +11,11 @@ from model_architecture import build_model
 import numpy as np
 import cv2
 import tensorflow as tf
+
+tf.get_logger().setLevel('ERROR')
+
+tf.config.threading.set_inter_op_parallelism_threads(1)
+tf.config.threading.set_intra_op_parallelism_threads(1)
 
 app = Flask(__name__)
 
@@ -73,8 +82,6 @@ classes = {
     41: "Level crossing without gates",
     42: "Bumpy road"
 }
-
-from skimage import exposure
 
 def preprocess_image(image):
 
